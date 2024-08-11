@@ -61,6 +61,10 @@ USER 1000:1000
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
+# Secret Keybase 
+# REMOVE BEFORE RELEASE
+ENV SECRET_KEY_BASE="9dc9150b9ed610122408b9f2330afa67d290428cf98993044499721e8a4e59c14574ba3f79781175ce685970f9e6de77c879a5326919834f0acdfb48a23a7882"
+
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
