@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  address: MyString
+  release_date: 2024-08-11 03:46:53
+  rug: false
+  liquidity_locked: false
+
+two:
+  address: MyString
+  release_date: 2024-08-11 03:46:53
+  rug: false
+  liquidity_locked: false
