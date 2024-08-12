@@ -4,6 +4,7 @@ module TokenScreener
   module Services
     module EtherScan
       class Client
+        HEADERS = {'Content-Type'=> 'application/json' }
 
         attr_reader :hydra
 
@@ -14,10 +15,15 @@ module TokenScreener
         # Somehow fetch createdPairs in a stream or subscription?
         # Observer
         def contracts
+
+        end
+
+        # Socials?
+        def token_information(address)
         end
 
         def balance(address)
-          client.get(etherscan_api_balance_url(address))
+          client.get(etherscan_api_balance_url(address), headers:)
         end
 
         private
@@ -31,6 +37,10 @@ module TokenScreener
 
         def etherscan_api_balance_url(address)
           "#{etherscan_api_url}&module=account&action=balance&address=#{address}&tag=latest"
+        end
+
+        def headers
+          HEADERS
         end
       end
     end
