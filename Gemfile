@@ -48,3 +48,5 @@ group :test do
   gem 'simplecov'
   gem 'webmock'
 end
+
+gem "faye-websocket", "~> 0.11.3"
