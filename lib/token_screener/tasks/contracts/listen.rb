@@ -9,7 +9,7 @@ module TokenScreener
   module Tasks
     module Contracts
       class Listen
-        WS_HEADERS = { 'Content-Type' => 'application/json' }
+        WS_HEADERS = { 'Content-Type' => 'application/json' }.freeze
 
         def self.perform
           listener = TokenScreener::Tasks::Contracts::Listen.new
