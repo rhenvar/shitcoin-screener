@@ -48,3 +48,5 @@ group :test do
   gem 'simplecov'
   gem 'webmock'
 end
+
+gem "typhoeus", "~> 1.4"
