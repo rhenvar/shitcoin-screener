@@ -66,4 +66,3 @@ module TokenScreener
     end
   end
 end
-
