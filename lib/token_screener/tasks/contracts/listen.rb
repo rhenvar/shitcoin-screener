@@ -9,8 +9,6 @@ module TokenScreener
   module Tasks
     module Contracts
       class Listen
-        WS_HEADERS = { 'Content-Type' => 'application/json' }.freeze
-
         def self.perform
           listener = TokenScreener::Tasks::Contracts::Listen.new
           jrpc_payload = listener.jrpc_string(listener.uniswap_pair_created_topic)
@@ -59,14 +57,7 @@ module TokenScreener
           }.to_json
         end
 
-        def approval_topic
-          "0x#{Digest::Keccak.hexdigest('Approval(address,address,uint256)', 256)}" # 256bit hex digest
-        end
-
-        def uniswap_mint_topic
-          "0x#{Digest::Keccak.hexdigest('Mint(address,uint,uint)', 256)}" # 256bit hex digest
-        end
-
+        # Uniswap V2 Factory
         # 0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9
         def uniswap_pair_created_topic
           "0x#{Digest::Keccak.hexdigest('PairCreated(address,address,address,uint256)', 256)}" # 256bit hex digest
@@ -75,3 +66,4 @@ module TokenScreener
     end
   end
 end
+
