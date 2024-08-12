@@ -6,4 +6,3 @@ namespace :contracts do
     TokenScreener::Tasks::Contracts::Listen.perform
   end
 end
-

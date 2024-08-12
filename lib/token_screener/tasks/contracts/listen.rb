@@ -2,34 +2,76 @@
 
 require 'faye/websocket'
 require 'eventmachine'
+require 'digest/keccak'
+require 'eth'
 
 module TokenScreener
   module Tasks
     module Contracts
       class Listen
+        WS_HEADERS = { 'Content-Type' => 'application/json' }
 
         def self.perform
-          EM.run {
-            ws = Faye::WebSocket::Client.new("wss://mainnet.infura.io/ws/v3/#{ENV.fetch('INFURA_API_KEY')}")
-            # -x '{"jsonrpc":"2.0", "id": 1, "method": "eth_subscribe", "params": ["logs", {"address": "0x8320fe7702b96808f7bbc0d4a888ed1468216cfd", "topics":["0xd78a0cb8bb633d06981248b816e7bd33c2a35a6089241d099fa519e361cab902"]}]}'
+          listener = TokenScreener::Tasks::Contracts::Listen.new
+          jrpc_payload = listener.jrpc_string(listener.uniswap_pair_created_topic)
 
-            ws.on :open do |event|
+          EM.run do
+            new_pairs_observed = 0
+            ws = Faye::WebSocket::Client.new("wss://mainnet.infura.io/ws/v3/#{ENV.fetch('INFURA_API_KEY')}")
+
+            ws.on :open do |_event|
               p [:open]
-              ws.send('{"jsonrpc": "2.0", "id": 1, "method": "eth_subscribe", "params": ["newPendingTransactions"]}')
+              ws.send(jrpc_payload)
             end
 
             ws.on :message do |event|
-              p [:message, event.data]
+              data = JSON.parse(event.data)
+
+              case data['method']
+              when 'eth_subscription'
+                new_pairs_observed += 1
+                pair = Eth::Abi.decode(['address'], data.dig('params', 'result', 'data'))[0]
+
+                p " --- NEW PAIR DETECTED ON ETH MAINNET: #{pair} ---"
+                p " --- Dexscreener URL: https://dexscreener.com/ethereum/#{pair} ---"
+              end
             end
 
             ws.on :close do |event|
+              p "New Pairs Observed: #{new_pairs_observed}"
               p [:close, event.code, event.reason]
               ws = nil
             end
-          }
+          end
+        end
+
+        def jrpc_string(topic)
+          {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_subscribe',
+            params: [
+              'logs',
+              {
+                topics: [topic]
+              }
+            ]
+          }.to_json
+        end
+
+        def approval_topic
+          "0x#{Digest::Keccak.hexdigest('Approval(address,address,uint256)', 256)}" # 256bit hex digest
+        end
+
+        def uniswap_mint_topic
+          "0x#{Digest::Keccak.hexdigest('Mint(address,uint,uint)', 256)}" # 256bit hex digest
+        end
+
+        # 0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9
+        def uniswap_pair_created_topic
+          "0x#{Digest::Keccak.hexdigest('PairCreated(address,address,address,uint256)', 256)}" # 256bit hex digest
         end
       end
     end
   end
 end
-
