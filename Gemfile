@@ -54,3 +54,5 @@ gem 'faye-websocket', '~> 0.11.3'
 gem 'keccak', '~> 1.3'
 
 gem 'eth', '~> 0.5.12'
+
+gem "typhoeus", "~> 1.4"
