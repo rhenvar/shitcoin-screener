@@ -4,7 +4,6 @@ module TokenScreener
   module Services
     module DexScreener
       class Client
-
         def liquidity(pair)
           response(pair).dig('pair', 'liquidity', 'usd') || 0
         end
@@ -31,4 +30,3 @@ module TokenScreener
     end
   end
 end
-
