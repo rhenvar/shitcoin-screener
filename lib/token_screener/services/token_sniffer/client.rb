@@ -19,7 +19,7 @@ module TokenScreener
         private
 
         def client
-          Typhoeus
+          @client ||= Typhoeus
         end
 
         def token_sniffer_url(address)
