@@ -13,13 +13,20 @@ module TokenScreener
         end
 
         def sniff_token(address)
-          JSON.parse client.get(token_sniffer_url(address), headers: HEADERS).body
+          response(address)
         end
 
-        private
+        # Expect a set of string test_keys
+        def rug_test_detected?(address, test_keys)
+          response(address)['tests'].each { |test| return true if tests.include?(test['id']) && test['result']} || false
+        end
 
         def client
           @client ||= Typhoeus
+        end
+
+        def response(address)
+          @response || = JSON.parse client.get(token_sniffer_url(address), headers: HEADERS).body
         end
 
         def token_sniffer_url(address)
