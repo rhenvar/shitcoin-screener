@@ -8,25 +8,25 @@ module TokenScreener
         def call(result)
           result.halt if result.value.empty?
 
-          filtered_contracts = result.value.each_with_object([]) do |address, _r| # Filter based on TokenSniffer results
+          filtered_contracts = result.value.each_with_object([]) do |address, addresses| # Filter based on TokenSniffer results
             # time for investigation niggers
             #
             # Need a way to mark a contract 'rug' if certain conditions are met
-            # Perhaps --- Result.rug? monad??? :soyface: nigger coom face
+            # Perhaps --- Result.rug? monad??? :soyface: nigger it has to make sense
             response = token_sniffer_client.sniff_token(address)
 
             # Hold up nigger let's think about this for a second
-            # understand? Cool. We are accepting a [] and need to
+            # understand? Cool. We are accesponse['is_flagged']
+            # Rug if any of these tests are true
             # do something to each element in it okay?
             # each -> fetch(contract)
             #  -> read rug criteria
             #   -> mark rug if reached
             #
-            #
             next unless response['message'] == 'OK'
 
             # Continue if any are true
-            too_risky = response['score'] < 80
+            potentially_too_risky = response['score'] < 50
             contract_source_unverified = !response['contract']['is_source_verified']
             has_fee_modifier = response['contract']['has_fee_modifier']
             has_blocklist = response['contract']['has_blocklist']
@@ -46,8 +46,17 @@ module TokenScreener
                               'testForUnableToSell',
                               'testForExtremeFee'
                             ]
+
             rug_test_detected = dexscreener_client.rug_test_detected?(rug_tests)
+
+            next if contract_source_unverified || has_fee_modifier || has_blocklist || has_proxy
+
+            next if rug_test_detected || is_flagged || unsellable || too_risky
+
+            addresses << address
           end
+
+          result.continue(filtered_contracts)
         end
 
         private
@@ -59,6 +68,7 @@ module TokenScreener
         def contract_db_interface
           # Need to write rug=true to db
           # Throw bad data out early
+          'WOULD BE MARKING AS RUGGED'
         end
       end
     end

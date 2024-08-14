@@ -15,6 +15,7 @@ module TokenScreener
               r
             end
             p.step TokenScreener::Pipelines::Steps::ScreenValuation.new
+            p.step TokenScreener::Pipelines::Steps::TokenSnifferValidation.new
             p.step { |r| r.value.empty? ? r.halt : r }
           end
 
