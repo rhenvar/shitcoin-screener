@@ -15,15 +15,9 @@ module TokenScreener
             adequate_liquidity = dexscreener_client.liquidity(address) > MIN_LIQUIDITY
             adequate_fdv = dexscreener_client.fdv(address) > MIN_FDV
 
-            puts "#{address}:
-              Liquidity: #{dexscreener_client.liquidity(address)}
-              FDV: #{dexscreener_client.fdv(address)}
-              "
-
             r << address if adequate_liquidity && adequate_fdv
           end
 
-          puts filtered_contracts.inspect
           result.continue(filtered_contracts)
         end
 

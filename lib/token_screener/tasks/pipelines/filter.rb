@@ -14,12 +14,9 @@ module TokenScreener
           initial_result = TokenScreener::Pipelines::Result.new(addresses)
 
           filterer = TokenScreener::Pipelines::Pipeline.new do |p|
-            p.step do |r|
-              puts 'Logging'
-              r
-            end
             p.step TokenScreener::Pipelines::Steps::ScreenValuation.new
             p.step TokenScreener::Pipelines::Steps::TokenSnifferValidation.new
+            # p.step TokenScreener::Pipelines::Steps::AnnounceResults
             p.step { |r| r.value.empty? ? r.halt : r }
           end
 
@@ -32,9 +29,9 @@ module TokenScreener
           if final_result.value.empty?
             puts "
 
-              No survivors detected!
+              Scanned #{initial_result.value.size} tokens on Uniswap v2
 
-              Continue? #{final_result.continue}
+              No survivors detected!
             ".colorize(:yellow)
             return
           end
@@ -44,7 +41,7 @@ module TokenScreener
               Current batch of surviving contracts announced!
           ".colorize(:green)
 
-          final_result.value.each { |_address| p " --- Dexscreener URL: https://dexscreener.com/ethereum#{addresses} ---" }
+          final_result.value.each { |address| p " --- Dexscreener URL: https://dexscreener.com/ethereum#{address} ---".colorize(:green) }
         end
       end
     end
