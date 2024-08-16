@@ -27,7 +27,7 @@ module TokenScreener
             #   rug_test_detected?
             # ADD rest
 
-            rugs << rug if rug
+            rugs << address if rug
             next if rug || sus
 
             addresses << address
