@@ -57,4 +57,4 @@ gem 'eth', '~> 0.5.12'
 
 gem 'typhoeus', '~> 1.4'
 
-gem "colorize", "~> 1.1"
+gem 'colorize', '~> 1.1'
