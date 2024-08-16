@@ -25,6 +25,7 @@ module TokenScreener
             #   risk_level == 'high
             #   sellable? == false
             #   rug_test_detected?
+            # ADD rest
 
             rugs << rug if rug
             next if rug || sus
@@ -44,6 +45,7 @@ module TokenScreener
 
         def rug(addresses)
           addresses.each do |address|
+            puts 'Rugging contract: ', address, "See explanation: https://tokensniffer.com/token/eth/#{address}"
             Token.update_all({ address: }, { rugged: true })
           end
         end

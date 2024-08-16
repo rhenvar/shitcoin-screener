@@ -4,17 +4,15 @@ class CreateTokens < ActiveRecord::Migration[7.2]
   def change
     create_table :tokens do |t|
       t.string :address, null: false
-      t.datetime :pair_create_date, null: false
-      t.string :network, null: false, default: 'ethereum'
+      t.datetime :created
 
       t.boolean :rugged, default: false
-      t.boolean :adequate_liquidity, default: false
-      t.boolean :adequate_market_cap, default: false
-      t.boolean :adequate_transaction_count, default: false
-      t.boolean :liquidity_locked, default: false
-      t.boolean :honeypot, default: true
+      t.boolean :trust, default: false
+      # Architect's note: It's possible to be a rugged trust. I know, weird right?
+      # This is called getting ass-fucked in crypto and it happens. Deal with it
 
       t.timestamps
+      t.index :address
     end
   end
 end
