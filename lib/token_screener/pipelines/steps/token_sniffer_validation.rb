@@ -46,7 +46,7 @@ module TokenScreener
         def rug(addresses)
           addresses.each do |address|
             puts 'Rugging contract: ', address, "See explanation: https://tokensniffer.com/token/eth/#{address}"
-            Token.update_all({ address: }, { rugged: true })
+            Token.where(address:).update_all(rugged: true)
           end
         end
 

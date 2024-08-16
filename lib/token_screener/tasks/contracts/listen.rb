@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'colorize'
 require 'faye/websocket'
 require 'eventmachine'
 require 'digest/keccak'
@@ -30,8 +31,9 @@ module TokenScreener
                 new_pairs_observed += 1
                 pair = Eth::Abi.decode(['address'], data.dig('params', 'result', 'data'))[0]
 
-                p " --- NEW PAIR DETECTED ON ETH MAINNET: #{pair} ---"
+                p ' --- NEW PAIR DETECTED ON ETH MAINNET  ---'
                 p " --- Dexscreener URL: https://dexscreener.com/ethereum/#{pair} ---"
+                Token.create(address: pair)
               end
             end
 

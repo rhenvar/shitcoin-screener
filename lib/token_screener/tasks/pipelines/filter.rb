@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colorize'
+
 module TokenScreener
   module Tasks
     module Pipelines
@@ -20,6 +22,11 @@ module TokenScreener
           end
 
           final_result = filterer.call(initial_result)
+          puts "
+              Current batch of surviving contracts announced!
+
+                #{final_result.value.each {}}
+          ".colorize(:green)
           puts final_result.value
           puts final_result.continue?
         end
