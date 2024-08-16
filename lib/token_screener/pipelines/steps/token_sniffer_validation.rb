@@ -13,53 +13,37 @@ module TokenScreener
             #
             # Need a way to mark a contract 'rug' if certain conditions are met
             # Perhaps --- Result.rug? monad??? :soyface: nigger it has to make sense
-            response = token_sniffer_client.sniff_token(address)
-
-            # Hold up nigger let's think about this for a second
-            # understand? Cool. We are accesponse['is_flagged']
-            # Rug if any of these tests are true
-            # do something to each element in it okay?
-            # each -> fetch(contract)
-            #  -> read rug criteria
-            #   -> mark rug if reached
             #
-            next unless response['message'] == 'OK'
+            next unless token_sniffer_client.audited?(address)
 
-            # Continue if any are true
-            potentially_too_risky = response['score'] < 50
-            contract_source_unverified = !response['contract']['is_source_verified']
-            has_fee_modifier = response['contract']['has_fee_modifier']
-            has_blocklist = response['contract']['has_blocklist']
-            has_proxy = response['contract']['has_proxy']
+            rug = token_sniffer_client.flagged?(address) || token_sniffer_client.risk_level(address) == 'high' || !token_sniffer_client.sellable?(address) || token_sniffer_client.rug_test_detected?(address)
+            sus = token_sniffer_client.score(address) < 50 || token_sniffer_client.sus_contract_detected?(address)
+            # BUSINESS LOGI
+            # PASS if:
+            #   score < 50
+            #   sus_contract_tests?
+            #
+            # RUG if:
+            #   is_flagged?
+            #   risk_level == 'high
+            #   sellable? == false
+            #   rug_test_detected?
 
-            # Rug if any are true
-            is_flagged = response['is_flagged']
-            too_risky = response['riskLevel'] == 'high'
-            unsellable = !response.dig('swap_simulation', 'is_sellable')
-
-            # Rug if any of these tests are true
-            rug_tests = Set[
-                              'testForProxy',
-                              'testForMaxTransactionAmount',
-                              'testForHighCreatorTokenBalance',
-                              'testForHighOwnerTokenBalance',
-                              'testForUnableToSell',
-                              'testForExtremeFee'
-                            ]
-
-            rug_test_detected = dexscreener_client.rug_test_detected?(rug_tests)
-
-            next if contract_source_unverified || has_fee_modifier || has_blocklist || has_proxy
-
-            next if rug_test_detected || is_flagged || unsellable || too_risky
+            rug(address) if rug
+            next if rug || sus
 
             addresses << address
           end
 
+          # Move values onto next step. Might be empty
           result.continue(filtered_contracts)
         end
 
         private
+
+        def rug(address)
+          Token.rug(address)
+        end
 
         def token_sniffer_client
           @token_sniffer_client ||= TokenScreener::Services::TokenSniffer::Client.new
