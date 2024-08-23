@@ -9,7 +9,7 @@ module TokenScreener
         def self.perform
           # Batch read from Postgresql?
           # Non rugged tokens recorded in the last 24hrs
-          addresses = Token.where(created_at: 2.days.ago..Time.current, rugged: false).map(&:address)
+          addresses = Token.where(created_at: 7.days.ago..Time.current, rugged: false).map(&:address)
 
           initial_result = TokenScreener::Pipelines::Result.new(addresses)
 
@@ -41,7 +41,9 @@ module TokenScreener
               Current batch of surviving contracts announced!
           ".colorize(:green)
 
-          final_result.value.each { |address| p " --- Dexscreener URL: https://dexscreener.com/ethereum#{address} ---".colorize(:green) }
+          puts fina_result.value.inspect
+
+          final_result.value.each { |address| puts " --- Dexscreener URL: https://dexscreener.com/ethereum#{address} --- ".colorize(:green) }
         end
       end
     end

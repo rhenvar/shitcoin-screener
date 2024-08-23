@@ -5,7 +5,7 @@ module TokenScreener
     module Steps
       class ScreenValuation
         MIN_LIQUIDITY = 10_000
-        MIN_FDV = 250_000
+        MIN_FDV = 100_000
 
         def call(result)
           return result.halt if result.value.empty?
