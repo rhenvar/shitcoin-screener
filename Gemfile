@@ -56,3 +56,5 @@ gem 'keccak', '~> 1.3'
 gem 'eth', '~> 0.5.12'
 
 gem 'typhoeus', '~> 1.4'
+
+gem 'colorize', '~> 1.1'

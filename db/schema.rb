@@ -18,15 +18,11 @@ ActiveRecord::Schema[7.2].define(version: 20_240_811_074_653) do
 
   create_table 'tokens', force: :cascade do |t|
     t.string 'address', null: false
-    t.datetime 'pair_create_date', null: false
-    t.string 'network', default: 'ethereum', null: false
+    t.datetime 'created'
     t.boolean 'rugged', default: false
-    t.boolean 'adequate_liquidity', default: false
-    t.boolean 'adequate_market_cap', default: false
-    t.boolean 'adequate_transaction_count', default: false
-    t.boolean 'liquidity_locked', default: false
-    t.boolean 'honeypot', default: true
+    t.boolean 'trust', default: false
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
+    t.index ['address'], name: 'index_tokens_on_address'
   end
 end
