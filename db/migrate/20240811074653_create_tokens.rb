@@ -8,11 +8,13 @@ class CreateTokens < ActiveRecord::Migration[7.2]
 
       t.boolean :rugged, default: false
       t.boolean :trust, default: false
+      t.string :chain, null: false
       # Architect's note: It's possible to be a rugged trust. I know, weird right?
       # This is called getting ass-fucked in crypto and it happens. Deal with it
 
       t.timestamps
       t.index :address
+      t.index :chain
     end
   end
 end

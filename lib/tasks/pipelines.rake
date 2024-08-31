@@ -4,7 +4,7 @@ namespace :pipelines do
   task filter: [:environment] do
     # Start contract filtering pipeline (Ethereum only)
     while true
-      TokenScreener::Tasks::Pipelines::Filter.perform
+      TokenScreener::Tasks::Pipelines::Ethereum::Filter.perform
       sleep(300)
     end
   end
